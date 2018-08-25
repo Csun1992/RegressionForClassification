@@ -35,42 +35,9 @@ if __name__ == "__main__":
     lowerLim = -1
     upperLim = 1
 
-
-    # experiment with sample size = 10
-    sampleSize = 10
-    repetition = []
-    
-    for i in range(experimentNum):
-        data = np.random.uniform(lowerLim, upperLim, sampleSize*dataDim).reshape(sampleSize, dataDim)
-        x1 = data[0, :]
-        x2 = data[1, :]
-        slope, intercept = findLine(x1, x2)
-        group = classify(data, slope, intercept)
-
-        perceptron = Perceptron(data, group)
-        perceptron.learn()
-        repetition.append(perceptron.getRepetition())
-
-    repetition.sort()
-    print "For sample size = 10, the average repetition is:"
-    print sum(repetition)/experimentNum
-    print repetition[len(repetition)/2]
-
-    weight = perceptron.getCoeff()
-    learnedSlope = -float(weight[1])/weight[2]
-    learnedInter = -float(weight[0])/weight[2]
-
-    testData = np.random.uniform(lowerLim, upperLim, dataDim*experimentNum).reshape(experimentNum, -1)
-    testGroupClass = classify(testData, slope, intercept)
-    learnedClass = classify(testData, learnedSlope, learnedInter) 
-    errorRate = findErrorRate(testGroupClass, learnedClass)
-    print "And the error rate is:"
-    print errorRate
-
-    
     # experiment with sample size = 100
     sampleSize = 100
-    repetition = []
+    inSampleErrs = []
 
     for i in range(experimentNum):
         data = np.random.uniform(lowerLim, upperLim, sampleSize*dataDim).reshape(sampleSize, dataDim)
@@ -79,15 +46,12 @@ if __name__ == "__main__":
         slope, intercept = findLine(x1, x2)
         group = classify(data, slope, intercept)
 
-        perceptron = Perceptron(data, group)
-        perceptron.learn()
-        repetition.append(perceptron.getRepetition())
+        regression = Regression(data, group)
+        inSampleErrs.append(regression.run())
 
-    repetition.sort()
-    print "For sample size = 100, the average repetition is:"
-    print sum(repetition)/experimentNum
-    print repetition[len(repetition)/2]
-
+    print "For sample size = 100, the average in sample error is:"
+    print sum(inSampleErrs)/experimentNum
+"""
     weight = perceptron.getCoeff()
     learnedSlope = -float(weight[1])/weight[2]
     learnedInter = -float(weight[0])/weight[2]
@@ -98,4 +62,4 @@ if __name__ == "__main__":
     errorRate = findErrorRate(testGroupClass, learnedClass)
     print "And the error rate is:"
     print errorRate
-
+"""
