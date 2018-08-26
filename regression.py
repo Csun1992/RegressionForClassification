@@ -1,27 +1,31 @@
 import numpy as np
 import sys
-import perceptron as pp
+from perceptron import * 
 
-def Regression(pp.Perceptron):
-    def getHatMatrix():
-        pseudoInv = np.linalg.inv(self.data.T.dot(self.data)) * self.data
-        self.hatMatrix = self.data * pseudoInv
+class Regression(Perceptron):
+    def __init__(self, data, group):
+        super(Regression, self).__init__(data, group)
+
+    def getHatMatrix(self):
+        pseudoInv = np.linalg.inv(self.data.T.dot(self.data)).dot(self.data.T)
+        self.hatMatrix = self.data.dot(pseudoInv)
         return self.hatMatrix
 
-    def classify():
-        for i in range(self.size):
-            self.classifiedGroup[i] = pp.sign(self.data[i, :].dot(self.hatMatrix))
+    def classify(self):
+        correctGroup = np.array(self.correctGroup).reshape(-1, 1)
+        predictedVal = self.hatMatrix.dot(correctGroup)
+        self.classifiedGroup = [sign(predictedVal[i])==correctGroup[i] for i in range(self.size)]
         return self.classifiedGroup
     
-    def getMisclassified(): 
+    def getMisclassified(self): 
         self.misclassified = [self.correctGroup[i] == self.classifiedGroup[i] for i in
         range(self.size)]
         return self.misclassified
 
-    def getInSampleErr():
+    def getInSampleErr(self):
         return sum(self.misclassified)/float(self.size)
 
-    def run():
+    def run(self):
         self.getHatMatrix()
         self.classify()
         self.getMisclassified()

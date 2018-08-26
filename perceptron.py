@@ -27,7 +27,7 @@ def findErrorRate(group1, group2):
             error += 1
     return float(error)/length
 
-class Perceptron: 
+class Perceptron(object): 
     def __init__(self, data, group):
         self.size = np.size(data, 0) 
         self.data = np.concatenate((np.ones((self.size,1)), data), axis=1) 
