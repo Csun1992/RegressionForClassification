@@ -14,11 +14,11 @@ class Regression(Perceptron):
     def classify(self):
         correctGroup = np.array(self.correctGroup).reshape(-1, 1)
         predictedVal = self.hatMatrix.dot(correctGroup)
-        self.classifiedGroup = [sign(predictedVal[i])==correctGroup[i] for i in range(self.size)]
+        self.classifiedGroup = [sign(predictedVal[i]) for i in range(self.size)]
         return self.classifiedGroup
     
     def getMisclassified(self): 
-        self.misclassified = [self.correctGroup[i] == self.classifiedGroup[i] for i in
+        self.misclassified = [self.correctGroup[i] != self.classifiedGroup[i] for i in
         range(self.size)]
         return self.misclassified
 
@@ -52,18 +52,18 @@ if __name__ == "__main__":
 
         regression = Regression(data, group)
         inSampleErrs.append(regression.run())
-
     print "For sample size = 100, the average in sample error is:"
     print sum(inSampleErrs)/experimentNum
-"""
-    weight = perceptron.getCoeff()
-    learnedSlope = -float(weight[1])/weight[2]
-    learnedInter = -float(weight[0])/weight[2]
 
-    testData = np.random.uniform(lowerLim, upperLim, dataDim*experimentNum).reshape(experimentNum, -1)
-    testGroupClass = classify(testData, slope, intercept)
-    learnedClass = classify(testData, learnedSlope, learnedInter) 
-    errorRate = findErrorRate(testGroupClass, learnedClass)
-    print "And the error rate is:"
-    print errorRate
-"""
+    # estimate out-of-sample error
+    hatMatrix = regression.getHatMatrix()
+    data = np.random.uniform(lowerLim, upperLim, sampleSize*dataDim).reshape(sampleSize, dataDim)
+    group = np.array(classify(data, slope, intercept)).reshape(-1, 1)
+    predictedVals = hatMatrix.dot(group) 
+    learnedGroup = [sign(predictedVals[i]) for i in range(sampleSize)]
+    outSampleErr = sum([learnedGroup[i]!=group[i] for i in range(sampleSize)]) / float(sampleSize)
+
+    print "out of sample error is:"
+    print outSampleErr
+
+    
